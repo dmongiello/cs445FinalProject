@@ -1,6 +1,8 @@
 /***************************************************************
 * file: FinalProject.java
 * authors: D. Mongiello
+* * Joel Woods
+* Erwin Maulas
 * class: CS 445 Computer Graphics
 *
 * assignment: Final Project Checkpoint 1
