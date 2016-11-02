@@ -7,7 +7,8 @@
 *
 * assignment: Final Project Checkpoint 1
 * date last modified: 10/31/2016 *
-* purpose: To handle the calls to control the camera 
+* purpose: To handle the calls to control the camera. 
+* Ideas taken from the lecture slides given by T. Diaz  3D Viewing.
 * */
 
 
@@ -106,6 +107,10 @@ public class FPCameraController {
         //translate to the position vector's location 
         glTranslatef(position.x, position.y, position.z);
     }
+    // method: gameLoop()
+    // purpose: This method creates an instance of CamraController starting at
+    // origin and updates the user view as the user uses input controls to navigate
+    // thoughout the world. 
     public void gameLoop()
     {
         FPCameraController camera = new FPCameraController(0, 0, 0);
@@ -172,6 +177,8 @@ public class FPCameraController {
         Display.destroy();
         
 }
+    // method: render()
+    // purpose: This method holds the poly gones to be rendered in the scene. 
     private void render() 
     { try
         {
