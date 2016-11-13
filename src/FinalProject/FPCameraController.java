@@ -106,7 +106,6 @@ public class FPCameraController {
         //look through the camera before you draw anything 
         camera.lookThrough();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //you would draw your scene here.
-        render(0,0,0);
         chunk.render();
         //draw the buffer to the screen 
         Display.update();
@@ -114,92 +113,6 @@ public class FPCameraController {
         }
         Display.destroy();
         
-}
-    // method: render()
-    // purpose: This method holds the poly gones to be rendered in the scene. 
-    private void render(int x, int y, int z) 
-    { 
-        try{
-            glBegin(GL_QUADS); 
-                //Top
-                glColor3f(0.1f,0.6f,0.1f);
-                glVertex3f( x+1.0f, y+1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f);
-                glVertex3f( x+1.0f,y+1.0f,z+1.0f); 
-                //Bottom
-                glColor3f(0.3f,0.2f,0.0f);
-                glVertex3f(x+ 1.0f,y+-1.0f,z+1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-                //Front
-                glVertex3f( x+1.0f,y+1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f( x+1.0f,y+-1.0f,z+1.0f);
-                //Back
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f, y+1.0f,z+-1.0f);
-                glVertex3f(x+1.0f, y+1.0f,z+-1.0f);
-                //Left
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+1.0f,z+-1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f);
-                //Right
-                glVertex3f(x+1.0f,y+1.0f,z+-1.0f); 
-                glVertex3f(x+1.0f,y+1.0f,z+1.0f);
-                glVertex3f(x+1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-            glEnd();
-            glLineWidth(2);
-            glBegin(GL_LINE_LOOP);
-                //Top
-                glColor3f(0.0f,0.0f,0.0f); 
-                glVertex3f( x+1.0f, y+1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f);
-                glVertex3f( x+1.0f,y+1.0f,z+1.0f); 
-                 glEnd();
-                glBegin(GL_LINE_LOOP); 
-                //Bottom
-                glVertex3f(x+ 1.0f,y+-1.0f,z+1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-                glEnd(); 
-                glBegin(GL_LINE_LOOP);
-                //Front
-                glVertex3f( x+1.0f,y+1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f( x+1.0f,y+-1.0f,z+1.0f);
-                glEnd();
-                glBegin(GL_LINE_LOOP); 
-                //Back
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f);
-                glVertex3f(x+-1.0f, y+1.0f,z+-1.0f);
-                glVertex3f(x+1.0f, y+1.0f,z+-1.0f);
-                glEnd(); 
-                glBegin(GL_LINE_LOOP);
-                //Left
-                glVertex3f(x+-1.0f,y+1.0f,z+1.0f); 
-                glVertex3f(x+-1.0f,y+1.0f,z+-1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+-1.0f); 
-                glVertex3f(x+-1.0f,y+-1.0f,z+1.0f);
-                glEnd(); 
-                glBegin(GL_LINE_LOOP);
-                //Right
-                glVertex3f(x+1.0f,y+1.0f,z+-1.0f); 
-                glVertex3f(x+1.0f,y+1.0f,z+1.0f);
-                glVertex3f(x+1.0f,y+-1.0f,z+1.0f); 
-                glVertex3f(x+1.0f,y+-1.0f,z+-1.0f);
-            glEnd();
-        }
-    catch(Exception e){} 
 }
     private void randomization()
     {
