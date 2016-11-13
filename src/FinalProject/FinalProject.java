@@ -13,11 +13,6 @@
 * */
 package FinalProject;
 
-/**
- *
- * @author David R. Mongiello
- *         
- */
 import org.lwjgl.input.Keyboard; 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode; 
@@ -64,13 +59,15 @@ private DisplayMode displayMode;
 // purpose: This method initializes the GL screen. 
     private void initGL() {
         // Background color black
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.2f, 0.7f, 1.3f, 0.0f);
         glMatrixMode(GL_PROJECTION); 
         glLoadIdentity();
         // Clipping Area 
         GLU.gluPerspective(100.0f, (float)displayMode.getWidth()/(float) displayMode.getHeight(), 0.1f, 300.0f);
         glMatrixMode(GL_MODELVIEW);
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
+        
+         glEnable(GL_DEPTH_TEST);
     }
     /**
      * @param args the command line arguments
