@@ -65,7 +65,7 @@ public class SimplexNoise {
 
     }
 
-    public double getNoise(int x,int y, int z){
+    public double getNoise(double x,double y,double z){
 
         double result=0;
 
