@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 
 public class FinalProject { 
-private FPCameraController fp = new FPCameraController(0f,0f,0f);
+private FPCameraController fp ;
 private DisplayMode displayMode;
 // method: start()
 // purpose: This method creates an instance of the class allowing for use of
@@ -28,18 +28,21 @@ private DisplayMode displayMode;
 // instance of main
     public void start()
     {
-    try {
-        createWindow(); initGL();
-        fp.gameLoop();//render(); 
-    } catch (Exception e) {
-        e.printStackTrace(); }
+        try {
+            createWindow(); initGL();
+            fp = new FPCameraController(0f,0f,0f);
+            fp.gameLoop();//render(); 
+        } 
+        catch (Exception e) {
+            e.printStackTrace(); 
+        }
     }
     
 // method: createWindow
 // purpose: This method creates a window with openGL and setup the display area. 
     private void createWindow() throws Exception
     {
-       Display.setFullscreen(false);
+        Display.setFullscreen(false);
         DisplayMode d[] = Display.getAvailableDisplayModes();
         for (int i = 0; i < d.length; i++) 
         { 
@@ -66,8 +69,9 @@ private DisplayMode displayMode;
         GLU.gluPerspective(100.0f, (float)displayMode.getWidth()/(float) displayMode.getHeight(), 0.1f, 300.0f);
         glMatrixMode(GL_MODELVIEW);
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
-        
-         glEnable(GL_DEPTH_TEST);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnable(GL_DEPTH_TEST);
     }
     /**
      * @param args the command line arguments

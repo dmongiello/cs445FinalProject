@@ -11,7 +11,6 @@
 * Ideas taken from the lecture slides given by T. Diaz  3D Viewing.
 * */
 
-
 package FinalProject;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.input.Keyboard;
@@ -33,15 +32,16 @@ public class FPCameraController {
     private float pitch = 0.0f;
     private Vector3Float me;
     private float ylist[];
-    private SimplexNoise noise;
+    private Chunk chunk;
     public FPCameraController(float x, float y, float z) {
         //instantiate position Vector3f to the x y z params. 
         position = new Vector3f(x, y, z);
         lPosition = new Vector3f(x,y,z);
         lPosition.x = 0f;
         lPosition.y = 15f;
-        lPosition.z = 0f; 
-        noise = new SimplexNoise(10,10,10);
+        lPosition.z = 0f;
+        chunk = new Chunk(-30,-90,-30);
+       // noise = new SimplexNoise(10,10,10);
     }
      /** method: gameLoop()
      * purpose: This method creates an instance of CamraController starting at
@@ -106,10 +106,8 @@ public class FPCameraController {
         //look through the camera before you draw anything 
         camera.lookThrough();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //you would draw your scene here.
-        for(int x =-15; x<15; x+=2){
-            for(int z=-15; z<15;z+=2)
-               render(x,0,z);
-        }
+        render(0,0,0);
+        chunk.render();
         //draw the buffer to the screen 
         Display.update();
         Display.sync(60);

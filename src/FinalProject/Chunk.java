@@ -27,6 +27,7 @@ public class Chunk
     private int VBOColorHandle;
     private int StartX, StartY, StartZ;
     private Random r;
+    private SimplexNoise noise;
     public void render()
     {
         glPushMatrix();
@@ -47,25 +48,28 @@ public class Chunk
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         FloatBuffer VertexPositionData =
-        BufferUtils.createFloatBuffer(
-        (CHUNK_SIZE * CHUNK_SIZE *
-        CHUNK_SIZE) * 6 * 12);
+         BufferUtils.createFloatBuffer((CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)*6*12);
+        
         FloatBuffer VertexColorData =
-        BufferUtils.createFloatBuffer((CHUNK_SIZE* CHUNK_SIZE *CHUNK_SIZE) * 6 
-                                       * 12);
+         BufferUtils.createFloatBuffer((CHUNK_SIZE*CHUNK_SIZE *CHUNK_SIZE)*6*12);
+        int height;
+        
         for (float x = 0; x < CHUNK_SIZE; x += 1) 
         {
+            int i=(int)(startX+x*(15-startX)/4);
             for (float z = 0; z < CHUNK_SIZE; z += 1) 
             {
-                for(float y = 0; y < CHUNK_SIZE; y++)
+                height = (int)(CHUNK_SIZE-4 - (noise.getNoise((int)x/2,1,(int)z/2))/2 * CUBE_LENGTH);
+                for(float y = 0; y < height && y < CHUNK_SIZE; y++)
                 {
                     VertexPositionData.put(createCube((float)(startX+x*CUBE_LENGTH),
-                                                      (float)(y*CUBE_LENGTH+
+                                                      (float)(startY+y*CUBE_LENGTH+
                                                       (int)(CHUNK_SIZE*.8)),
                                                       (float) (startZ + z *
                                                       CUBE_LENGTH)));
+                   
                     VertexColorData.put(createCubeVertexCol(getCubeColor(
-                                        Blocks[(int) x][(int) y][(int) z])));
+                                         Blocks[(int) x][(int) y][(int) z])));
                 }
             }
         }
@@ -128,17 +132,20 @@ public class Chunk
     {
         switch (block.Type.GetID()) 
         {
-            case 1:
+            case 0:
             return new float[] { 0, 1, 0 };
-            case 2:
+            case 1:
             return new float[] { 1, 0.5f, 0 };
+            case 2:
+            return new float[] {0, 0.0f, 1f};
             case 3:
-            return new float[] { 0, 0f, 1f };
+            return new float[] { .2f, .3f, 0f };
         }
         return new float[] { 1, 1, 1 };
     }
     public Chunk(int startX, int startY, int startZ) 
     {
+        noise = new SimplexNoise(2,2,1);
         r = new Random();
         Blocks = new
         Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];

@@ -42,12 +42,8 @@ public class SimplexNoise {
 
         for(int i=0;i<numberOfOctaves;i++){
             octaves[i]=new SimplexNoise_octave(rnd.nextInt());
-
             frequencys[i] = Math.pow(2,i);
             amplitudes[i] = Math.pow(persistence,octaves.length-i);
-
-
-
 
         }
 
@@ -61,7 +57,6 @@ public class SimplexNoise {
         for(int i=0;i<octaves.length;i++){
           //double frequency = Math.pow(2,i);
           //double amplitude = Math.pow(persistence,octaves.length-i);
-
           result=result+octaves[i].noise(x/frequencys[i], y/frequencys[i])* amplitudes[i];
         }
 
