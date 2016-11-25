@@ -41,6 +41,7 @@ public class Block
     public Block(BlockType type)
     {
         Type= type;
+        IsActive = true;
     }
     public void setCoords(float x, float y, float z)
     {
@@ -51,5 +52,9 @@ public class Block
     public boolean IsActive() 
     {
         return IsActive;
+    }
+    public void setActive(Boolean a)
+    {
+        IsActive  = a;
     }
 }

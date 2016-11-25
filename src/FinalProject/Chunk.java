@@ -76,26 +76,35 @@ public class Chunk
             for (float z = 0; z < CHUNK_SIZE; z += 1) 
             {
                 //randomize height here
-                r=(int)((noise.getNoise((double)x/15,(double)z/15))*CUBE_LENGTH);
+                r=(int)((noise.getNoise((double)x/20,(double)z/20))*CUBE_LENGTH);
                 height =CHUNK_SIZE-5-r;
                 r++;
-                for(float y = 0; y < height && y < CHUNK_SIZE; y++)
+                
+                for(float y = 0; y < CHUNK_SIZE; y++)
                 {
-                    VertexPositionData.put(createCube((float)(startX+x*CUBE_LENGTH),
+                    if( y < height && Blocks[(int)x][(int)y][(int)z].IsActive()){
+                        VertexPositionData.put(createCube((float)(startX+x*CUBE_LENGTH),
                                                       (float)(startY+y*CUBE_LENGTH+
                                                       (int)(CHUNK_SIZE*.8)),
                                                       (float) (startZ + z *
                                                       CUBE_LENGTH)));
-                    if(y>=(height-2))
-                        Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Dirt;
-                    if(y==(height-1))
-                        Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Grass;
-                    if(y<=r)
-                        Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Bedrock;
-                    VertexColorData.put(createCubeVertexCol(getCubeColor(
-                                         Blocks[(int)x][(int)y][(int)z])));
-                    VertexTextureData.put(createTexCube((float)0,(float)0,
-                                         Blocks[(int)(x)][(int)(y)][(int)(z)]));
+                    
+                        if(Blocks[(int)x][(int)y][(int)z].Type.GetID() > 2)
+                        {
+                            if(y>=(height-2))
+                                Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Dirt;
+                            if(y==(height-1))
+                                Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Grass;
+                        }
+                        if(y<=r)
+                            Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Bedrock;
+                        VertexColorData.put(createCubeVertexCol(getCubeColor(
+                                          Blocks[(int)x][(int)y][(int)z])));
+                        VertexTextureData.put(createTexCube((float)0,(float)0,
+                                             Blocks[(int)(x)][(int)(y)][(int)(z)]));
+                    }
+                    else//if above the height for that x,z set inactive
+                        Blocks[(int)x][(int)y][(int)z].setActive(false);
                 }
             }
         }
@@ -240,35 +249,35 @@ public class Chunk
             return new float[] 
             {
                 // BOTTOM QUAD(DOWN=+Y)
-                x + offset*15, y + offset*1,
-                x + offset*14, y + offset*1,
-                x + offset*14, y + offset*0,
-                x + offset*15, y + offset*0,
-                // TOP!
-                x + offset*15, y + offset*1,
-                x + offset*14, y + offset*1,
-                x + offset*14, y + offset*0,
-                x + offset*15, y + offset*0,
+                x + offset*16, y + offset*13,
+                x + offset*15, y + offset*13,
+                x + offset*15, y + offset*12,
+                x + offset*16, y + offset*12,
+                // TOP
+                x + offset*16, y + offset*13,
+                x + offset*15, y + offset*13,
+                x + offset*15, y + offset*12,
+                x + offset*16, y + offset*12,
                 // FRONT QUAD
-                x + offset*15, y + offset*0,
-                x + offset*14, y + offset*0,
-                x + offset*14, y + offset*1,
-                x + offset*15, y + offset*1,
+                x + offset*16, y + offset*12,
+                x + offset*15, y + offset*12,
+                x + offset*15, y + offset*13,
+                x + offset*16, y + offset*13,
                 // BACK QUAD
-                x + offset*14, y + offset*1,
-                x + offset*15, y + offset*1,
-                x + offset*15, y + offset*0,
-                x + offset*14, y + offset*0,
+                x + offset*15, y + offset*13,
+                x + offset*16, y + offset*13,
+                x + offset*16, y + offset*12,
+                x + offset*15, y + offset*12,
                 // LEFT QUAD
-                x + offset*15, y + offset*0,
-                x + offset*14, y + offset*0,
-                x + offset*14, y + offset*1,
-                x + offset*15, y + offset*1,
+                x + offset*16, y + offset*12,
+                x + offset*15, y + offset*12,
+                x + offset*15, y + offset*13,
+                x + offset*16, y + offset*13,
                 // RIGHT QUAD
-                x + offset*15, y + offset*0,
-                x + offset*14, y + offset*0,
-                x + offset*14, y + offset*1,
-                x + offset*15, y + offset*1
+                x + offset*16, y + offset*12,
+                x + offset*15, y + offset*12,
+                x + offset*15, y + offset*13,
+                x + offset*16, y + offset*13
             };
             case 3:
             return new float[] 
@@ -377,7 +386,8 @@ public class Chunk
     }
     public Chunk(int startX, int startY, int startZ) 
     {
-        noise = new SimplexNoise(2,1,1);
+        Random rand = new Random();
+        noise = new SimplexNoise(2,1,rand.nextInt());
         double r =0;
         Blocks = new
         Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
@@ -386,28 +396,37 @@ public class Chunk
             for (int y = 0; y < CHUNK_SIZE; y++) 
             {
                 for (int z = 0; z < CHUNK_SIZE; z++) 
-                {
+                { 
+             
                     r = Math.abs(noise.getNoise((double)x/30,(double)y/30,(double)z/30));
-                    if(r>0.6f)
-                    {
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Stone);
+                    if(y > CHUNK_SIZE-8){
+                        if(r>0.7f)
+                        {
+                            Blocks[x][y][z] = new
+                            Block(Block.BlockType.BlockType_Water);
+                        }
+                        else if(r>0.5f)
+                        {
+                            Blocks[x][y][z] = new
+                            Block(Block.BlockType.BlockType_Sand);
+                        }
+                        else{
+                            Blocks[x][y][z] = new
+                            Block(Block.BlockType.BlockType_Dirt);
+                        }
                     }
-                    else if(r>0.3f)
-                    {
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Sand);
-                    }
-                    else if(r>.2f)
-                    {
-                        Blocks[x][y][z] = new
-                        Block(Block.BlockType.BlockType_Water);
-                    }
-                    else
+                    else if(r>.3f)
                     {
                         Blocks[x][y][z] = new
                         Block(Block.BlockType.BlockType_Dirt);
                     }
+                    else
+                    {
+                        Blocks[x][y][z] = new
+                        Block(Block.BlockType.BlockType_Stone);
+                    }
+                    
+                        
                 }
             }
         }
