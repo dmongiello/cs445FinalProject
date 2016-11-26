@@ -48,7 +48,7 @@ public class Chunk
         glBindBuffer(GL_ARRAY_BUFFER, VBOTextureHandle);
         glBindTexture(GL_TEXTURE_2D, 1);
         glTexCoordPointer(2,GL_FLOAT,0,0L);
-        glDrawArrays(GL_QUADS, 0,
+        glDrawArrays(GL_S, 0,
         CHUNK_SIZE *CHUNK_SIZE*
         CHUNK_SIZE * 24);
         glPopMatrix();
@@ -76,28 +76,30 @@ public class Chunk
             for (float z = 0; z < CHUNK_SIZE; z += 1) 
             {
                 //randomize height here
-                r=(int)((noise.getNoise((double)x/20,(double)z/20))*CUBE_LENGTH);
-                height =CHUNK_SIZE-5-r;
+                r=(int)((noise.getNoise((double)x/15,(double)z/15))*CUBE_LENGTH);
+                height =CHUNK_SIZE-r-1;
                 r++;
                 
                 for(float y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if( y < height && Blocks[(int)x][(int)y][(int)z].IsActive()){
+                    if( y < height && Blocks[(int)x][(int)y][(int)z].IsActive()){//if below randomized height and active make block
                         VertexPositionData.put(createCube((float)(startX+x*CUBE_LENGTH),
-                                                      (float)(startY+y*CUBE_LENGTH+
-                                                      (int)(CHUNK_SIZE*.8)),
+                                                      (float)(startY+y*CUBE_LENGTH),
                                                       (float) (startZ + z *
                                                       CUBE_LENGTH)));
                     
-                        if(Blocks[(int)x][(int)y][(int)z].Type.GetID() > 2)
+                        if(Blocks[(int)x][(int)y][(int)z].Type.GetID() > 2)//if not sand or water make grass
                         {
-                            if(y>=(height-2))
+                            if(y>=(height-2))//below grass make dirt
                                 Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Dirt;
                             if(y==(height-1))
                                 Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Grass;
                         }
-                        if(y<=r)
+                        if(y<=r)//bottom level shaped bedrock
                             Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Bedrock;
+                        if(y<2&&z<2&&x==0)
+                            Blocks[(int)x][(int)y][(int)z].Type = Block.BlockType.BlockType_Grass;
+                        
                         VertexColorData.put(createCubeVertexCol(getCubeColor(
                                           Blocks[(int)x][(int)y][(int)z])));
                         VertexTextureData.put(createTexCube((float)0,(float)0,
@@ -132,37 +134,36 @@ public class Chunk
         }
         return cubeColors;
     }
-    
     public static float[] createCube(float x, float y,float z) 
     {
         int offset = CUBE_LENGTH / 2;
         return new float[] {
-        // TOP QUAD
+        // Top 
         x + offset, y + offset, z,
         x - offset, y + offset, z,
         x - offset, y + offset, z - CUBE_LENGTH,
         x + offset, y + offset, z - CUBE_LENGTH,
-        // BOTTOM QUAD
+        // bottom 
         x + offset, y - offset, z - CUBE_LENGTH,
         x - offset, y - offset, z - CUBE_LENGTH,
         x - offset, y - offset, z,
         x + offset, y - offset, z,
-        // FRONT QUAD
+        // front 
         x + offset, y + offset, z - CUBE_LENGTH,
         x - offset, y + offset, z - CUBE_LENGTH,
         x - offset, y - offset, z - CUBE_LENGTH,
         x + offset, y - offset, z - CUBE_LENGTH,
-        // BACK QUAD
+        // back 
         x + offset, y - offset, z,
         x - offset, y - offset, z,
         x - offset, y + offset, z,
         x + offset, y + offset, z,
-        // LEFT QUAD
+        // LEFT 
         x - offset, y + offset, z - CUBE_LENGTH,
         x - offset, y + offset, z,
         x - offset, y - offset, z,
         x - offset, y - offset, z - CUBE_LENGTH,
-        // RIGHT QUAD
+        // RIGHT 
         x + offset, y + offset, z,
         x + offset, y + offset, z - CUBE_LENGTH,
         x + offset, y - offset, z - CUBE_LENGTH,
@@ -177,146 +178,146 @@ public class Chunk
         float offset = (1024f/16)/1024f;
         switch (block.Type.GetID()) 
         {
-            case 0:
+            case 0://grass
                 return new float[] 
                 {
-                    // topQUAD(DOWN=+Y)
+                    // top
                     x + offset*3, y + offset*10,
                     x + offset*2, y + offset*10,
                     x + offset*2, y + offset*9,
                     x + offset*3, y + offset*9,
-                    // borrom!
+                    // bottom!
                     x + offset*3, y + offset*1,
                     x + offset*2, y + offset*1,
                     x + offset*2, y + offset*0,
                     x + offset*3, y + offset*0,
-                    // FRONT QUAD
+                    // front 
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
                     x + offset*3, y + offset*1,
-                    // BACK QUAD
+                    // back 
                     x + offset*4, y + offset*1,
                     x + offset*3, y + offset*1,
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
-                    // LEFT QUAD
+                    // LEFT 
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
                     x + offset*3, y + offset*1,
-                    // RIGHT QUAD
+                    // RIGHT 
                     x + offset*3, y + offset*0,
                     x + offset*4, y + offset*0,
                     x + offset*4, y + offset*1,
                     x + offset*3, y + offset*1
                 };
-            case 1:
+            case 1://sand
             return new float[] 
             {
-                // BOTTOM QUAD(DOWN=+Y)
+                // bottom 
                 x + offset*3, y + offset*2,
                 x + offset*2, y + offset*2,
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1,
-                // TOP!
+                // Top!
                 x + offset*3, y + offset*2,
                 x + offset*2, y + offset*2,
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1,
-                // FRONT QUAD
+                // front 
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
                 x + offset*2, y + offset*2,
                 x + offset*3, y + offset*2,
-                // BACK QUAD
+                // back 
                 x + offset*2, y + offset*2,
                 x + offset*3, y + offset*2,
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
-                // LEFT QUAD
+                // LEFT 
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
                 x + offset*2, y + offset*2,
                 x + offset*3, y + offset*2,
-                // RIGHT QUAD
+                // RIGHT 
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
                 x + offset*2, y + offset*2,
                 x + offset*3, y + offset*2
             };
-            case 2:
+            case 2://water
             return new float[] 
             {
-                // BOTTOM QUAD(DOWN=+Y)
+                // bottom 
                 x + offset*16, y + offset*13,
                 x + offset*15, y + offset*13,
                 x + offset*15, y + offset*12,
                 x + offset*16, y + offset*12,
-                // TOP
+                // Top
                 x + offset*16, y + offset*13,
                 x + offset*15, y + offset*13,
                 x + offset*15, y + offset*12,
                 x + offset*16, y + offset*12,
-                // FRONT QUAD
+                // front 
                 x + offset*16, y + offset*12,
                 x + offset*15, y + offset*12,
                 x + offset*15, y + offset*13,
                 x + offset*16, y + offset*13,
-                // BACK QUAD
+                // back 
                 x + offset*15, y + offset*13,
                 x + offset*16, y + offset*13,
                 x + offset*16, y + offset*12,
                 x + offset*15, y + offset*12,
-                // LEFT QUAD
+                // LEFT 
                 x + offset*16, y + offset*12,
                 x + offset*15, y + offset*12,
                 x + offset*15, y + offset*13,
                 x + offset*16, y + offset*13,
-                // RIGHT QUAD
+                // RIGHT 
                 x + offset*16, y + offset*12,
                 x + offset*15, y + offset*12,
                 x + offset*15, y + offset*13,
                 x + offset*16, y + offset*13
             };
-            case 3:
+            case 3://dirt
             return new float[] 
             {
-                // BOTTOM QUAD(DOWN=+Y)
+                // bottom 
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
                 x + offset*2, y + offset*0,
                 x + offset*3, y + offset*0,
-                // TOP!
+                // Top!
                 x + offset*3, y + offset*1,
                 x + offset*2, y + offset*1,
                 x + offset*2, y + offset*0,
                 x + offset*3, y + offset*0,
-                // FRONT QUAD
+                // front 
                 x + offset*3, y + offset*0,
                 x + offset*2, y + offset*0,
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1,
-                // BACK QUAD
+                // back 
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1,
                 x + offset*3, y + offset*0,
                 x + offset*2, y + offset*0,
-                // LEFT QUAD
+                // LEFT 
                 x + offset*3, y + offset*0,
                 x + offset*2, y + offset*0,
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1,
-                // RIGHT QUAD
+                // RIGHT 
                 x + offset*3, y + offset*0,
                 x + offset*2, y + offset*0,
                 x + offset*2, y + offset*1,
                 x + offset*3, y + offset*1
             };
-            case 4:
+            case 4://stone
             return new float[] 
             {
-                    // topQUAD(DOWN=+Y)
+                    // top
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
                     x + offset*1, y + offset*0,
@@ -326,56 +327,56 @@ public class Chunk
                     x + offset*1, y + offset*1,
                     x + offset*1, y + offset*0,
                     x + offset*2, y + offset*0,
-                    // FRONT QUAD
+                    // front 
                     x + offset*1, y + offset*0,
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
-                    // BACK QUAD
+                    // back 
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
                     x + offset*1, y + offset*0,
                     x + offset*2, y + offset*0,
-                    // LEFT QUAD
+                    // LEFT 
                     x + offset*1, y + offset*0,
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1,
-                    // RIGHT QUAD
+                    // RIGHT 
                     x + offset*1, y + offset*0,
                     x + offset*2, y + offset*0,
                     x + offset*2, y + offset*1,
                     x + offset*1, y + offset*1
                 };
-            default:
+            default://bedrock
             return new float[] 
             {
-                // BOTTOM QUAD(DOWN=+Y)
+                // bottom 
                 x + offset*1, y + offset*10,
                 x + offset*2, y + offset*10,
                 x + offset*1, y + offset*9,
                 x + offset*2, y + offset*9,
-                // TOP!
+                // Top!
                 x + offset*2, y + offset*2,
                 x + offset*1, y + offset*2,
                 x + offset*1, y + offset*1,
                 x + offset*2, y + offset*1,
-                // FRONT QUAD
+                // front 
                 x + offset*2, y + offset*1,
                 x + offset*1, y + offset*1,
                 x + offset*1, y + offset*2,
                 x + offset*2, y + offset*2,
-                // BACK QUAD
+                // back 
                 x + offset*1, y + offset*2,
                 x + offset*2, y + offset*2,
                 x + offset*2, y + offset*1,
                 x + offset*1, y + offset*1,
-                // LEFT QUAD
+                // LEFT 
                 x + offset*2, y + offset*1,
                 x + offset*1, y + offset*1,
                 x + offset*1, y + offset*2,
                 x + offset*2, y + offset*2,
-                // RIGHT QUAD
+                // RIGHT 
                 x + offset*2, y + offset*1,
                 x + offset*1, y + offset*1,
                 x + offset*1, y + offset*2,
@@ -399,7 +400,7 @@ public class Chunk
                 { 
              
                     r = Math.abs(noise.getNoise((double)x/30,(double)y/30,(double)z/30));
-                    if(y > CHUNK_SIZE-8){
+                    if(y > CHUNK_SIZE-4){//loads sand  and water in upper levels
                         if(r>0.7f)
                         {
                             Blocks[x][y][z] = new
@@ -425,12 +426,10 @@ public class Chunk
                         Blocks[x][y][z] = new
                         Block(Block.BlockType.BlockType_Stone);
                     }
-                    
-                        
                 }
             }
         }
-        try{
+        try{//load block textures
             texture = TextureLoader.getTexture("PNG",
                             ResourceLoader.getResourceAsStream("Terrain.png"));
         }
@@ -447,4 +446,5 @@ public class Chunk
   
         rebuildMesh(startX, startY, startZ);
     }
+   
 }

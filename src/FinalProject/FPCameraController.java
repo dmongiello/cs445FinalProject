@@ -37,18 +37,17 @@ public class FPCameraController {
     private Chunk chunk;
     public FPCameraController(float x, float y, float z) {
         //instantiate position Vector3f to the x y z params. 
-        position = new Vector3f(x, y, z);
+        position = new Vector3f(x, y-30, z);
         lPosition = new Vector3f(x,y,z);
         lPosition.x = 0f;
         lPosition.y = 15f;
         lPosition.z = 0f;
-        chunk = new Chunk(-30,-90,-30);
-       // noise = new SimplexNoise(10,10,10);
+        chunk = new Chunk(-30,-30,-30);
     }
      /** method: gameLoop()
      * purpose: This method creates an instance of CamraController starting at
      * origin and updates the user view as the user uses input controls to navigate
-     * thoughout the world. 
+     * throughout the world. 
      */
     public void gameLoop()
     {
@@ -64,61 +63,56 @@ public class FPCameraController {
         // keep looping till the display window is closed the ESC key is down 
         while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))
         {
-        
-        time = Sys.getTime();
-        lastTime = time;
-        //distance in mouse movement //from the last getDX() call.
-        dx = Mouse.getDX();
-        //distance in mouse movement //from the last getDY() call.
-        dy = Mouse.getDY();
-        //controll camera yaw from x movement fromt the mouse
-          camera.yaw(dx * mouseSensitivity);
-        //controll camera pitch from y movement fromt the mouse 
-        camera.pitch(dy * mouseSensitivity);
-        //when passing in the distance to move
-        //we times the movementSpeed with dt this is a time scale
-        //so if its a slow frame u move more then a fast frame
-        //so on a slow computer you move just as fast as on a fast computer 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W))//move forward
-        {
-            camera.walkForward(movementSpeed); 
-           
+            time = Sys.getTime();
+            lastTime = time;
+            //distance in mouse movement //from the last getDX() call.
+            dx = Mouse.getDX();
+            //distance in mouse movement //from the last getDY() call.
+            dy = Mouse.getDY();
+            //controll camera yaw from x movement fromt the mouse
+            camera.yaw(dx * mouseSensitivity);
+            //controll camera pitch from y movement fromt the mouse 
+            camera.pitch(dy * mouseSensitivity);
+            //when passing in the distance to move
+            //we times the movementSpeed with dt this is a time scale
+            //so if its a slow frame u move more then a fast frame
+            //so on a slow computer you move just as fast as on a fast computer 
+            if (Keyboard.isKeyDown(Keyboard.KEY_W))//move forward
+            {
+                camera.walkForward(movementSpeed);   
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_S))//move backwards 
+            {
+                camera.walkBackwards(movementSpeed); 
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_A))//strafe left 
+            {
+                camera.strafeLeft(movementSpeed);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_D))//strafe right
+            {
+                camera.strafeRight(movementSpeed);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))//move up
+            {
+                camera.moveUp(movementSpeed);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+            {
+                camera.moveDown(movementSpeed); 
+            }
+
+            //set the modelview matrix back to the identity 
+            glLoadIdentity();
+            //look through the camera before you draw anything 
+            camera.lookThrough();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //you would draw your scene here.
+            chunk.render();
+            //draw the buffer to the screen 
+            Display.update();
+            Display.sync(60);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_S))//move backwards 
-        {
-            camera.walkBackwards(movementSpeed); 
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_A))//strafe left 
-        {
-            camera.strafeLeft(movementSpeed);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_D))//strafe right
-        {
-            camera.strafeRight(movementSpeed);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))//move up
-        {
-            camera.moveUp(movementSpeed);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-        {
-            camera.moveDown(movementSpeed); 
-        }
-        //set the modelview matrix back to the identity 
-        glLoadIdentity();
-        //look through the camera before you draw anything 
-        camera.lookThrough();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //you would draw your scene here.
-        chunk.render();
-        //draw the buffer to the screen 
-        Display.update();
-        Display.sync(60);
-        }
-        Display.destroy();
-        
-}
-    private void randomization()
-    {
+        Display.destroy();    
     }
     
     //increment the camera's current yaw rotation 
@@ -131,25 +125,35 @@ public class FPCameraController {
     public void pitch(float amount)
     {
         //increment the pitch by the amount param
-        if(pitch <=180){
-            pitch -= amount; 
+        
+            System.out.println( pitch);
+        if(pitch-amount <=90)//stops you from turning upside down
+        {
+            if(pitch-amount >= -90)
+                pitch -= amount;
+            else
+                pitch=-89.9f;
         }
+        else
+          pitch=89.9f;
     }
      //moves the camera forward relative to its current rotation (yaw) 
     public void walkForward(float distance)
     {
+       
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw)); 
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
         position.x -= xOffset;
         position.z += zOffset;
+        
     }
     //moves the camera backward relative to its current rotation (yaw)
     public void walkBackwards(float distance)
     {
         float xOffset = distance * (float)Math.sin(Math.toRadians(yaw)); 
         float zOffset = distance * (float)Math.cos(Math.toRadians(yaw));
-        position.x += xOffset;
-        position.z -= zOffset;
+        position.x += xOffset;position.z -= zOffset;
+        
     }
     //strafes the camera left relative to its current rotation (yaw) 
     public void strafeLeft(float distance)
@@ -189,6 +193,7 @@ public class FPCameraController {
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         //translate to the position vector's location 
         glTranslatef(position.x, position.y, position.z);
+        //stops light from moving
         FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
         lightPosition.put(lPosition.x).put(lPosition.y).
                       put(lPosition.z).put(1.0f).flip();
