@@ -6,7 +6,7 @@
 * class: CS 445 Computer Graphics
 *
 * assignment: Final Project Checkpoint 1
-* date last modified: 10/31/2016 *
+* date last modified: 11/1/2016 *
 * purpose: The purpose of this class is to hold the camera's position 
 * in 3d space. 
 * Ideas taken from the lecture slides given from T. Diaz  3D Viewing.  

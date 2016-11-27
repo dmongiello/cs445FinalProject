@@ -1,5 +1,5 @@
 /***************************************************************
-* file: FPCameraController.java
+* file: Block.java
 * authors: D. Mongiello
 * * Joel Woods
 * Erwin Maulas
@@ -7,7 +7,7 @@
 *
 * assignment: Final Project Checkpoint 1
 * date last modified: 10/31/2016 *
-* purpose: To handle the calls to control the camera. 
+* purpose: Create an instance of a block 
 * Ideas taken from the lecture slides given by T. Diaz  3D Viewing.
 * */
 
@@ -56,5 +56,9 @@ public class Block
     public void setActive(Boolean a)
     {
         IsActive  = a;
+    }
+    public int GetID()
+    { 
+      return Type.GetID();
     }
 }

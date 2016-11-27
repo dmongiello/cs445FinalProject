@@ -1,13 +1,13 @@
 /***************************************************************
-* file: FPCameraController.java
+* file: SimplexNoise.java
 * authors: D. Mongiello
 * * Joel Woods
 * Erwin Maulas
 * class: CS 445 Computer Graphics
 *
 * assignment: Final Project Checkpoint 1
-* date last modified: 10/31/2016 *
-* purpose: To handle the calls to control the camera. 
+* date last modified: 11/25/2016 
+* purpose: randomly create different levels of terrian 
 * Ideas taken from the lecture slides given by T. Diaz  3D Viewing.
 * */
 
