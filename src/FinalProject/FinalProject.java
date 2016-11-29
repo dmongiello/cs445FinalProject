@@ -8,7 +8,7 @@
 * assignment: Final Project Checkpoint 1
 * date last modified: 11/25/2016 
 * purpose: This program creates a cube in 3d spaces and allows the user 
-* to move around in 3d space while viewing the cube. 
+* to move around in 3d space while viewing the cubes. 
 * Ideas taken from the lecture slides given by T. Diaz  3D Viewing.
 * */
 package FinalProject;
@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
+
 public class FinalProject { 
 private FloatBuffer lightPosition;
 private FloatBuffer whiteLight;
